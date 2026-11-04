@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ChargeSmart — Login</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="auth-page">
+    <main class="auth-card">
+      <a class="back" href="index.html">← Back to Home</a>
+      <div class="brand">
+        <span class="brand-mark">⚡</span>
+        <div><b>ChargeSmart</b><small>Secure account access</small></div>
+      </div>
+      <h1 id="heading">Welcome back</h1>
+      <p id="subheading">Log in to continue to your dashboard.</p>
+
+      <div class="demo-box" id="demoBox">
+        <div class="demo-box-head">
+          <span id="demoTitle">⚡ <b>Default Owner Login</b></span>
+          <button type="button" class="btn-quick-fill" id="fillDemoBtn">Auto-fill Owner</button>
+        </div>
+        <div class="demo-creds-list" id="demoCredsText">
+          <div>Username: <code>owner</code> &nbsp;|&nbsp; Password: <code>owner123</code></div>
+        </div>
+      </div>
+
+      <form id="authForm">
+        <label id="nameWrap" class="hidden">
+          Full name
+          <input
+            id="fullName"
+            autocomplete="name"
+            placeholder="Your name or business name"
+          />
+        </label>
+        <label id="userLabel">
+          Username or Email
+          <input
+            id="username"
+            name="username"
+            type="text"
+            required
+            autocomplete="username"
+            placeholder="e.g. owner or owner@example.com"
+          />
+        </label>
+        <label>
+          Password
+          <div class="password-wrap">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              minlength="4"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              id="togglePassword"
+              title="Show / Hide password"
+              aria-label="Toggle password visibility"
+            >👁️</button>
+          </div>
+        </label>
+        <label>
+          Account type
+          <select id="role">
+            <option value="owner">Station Owner</option>
+            <option value="driver">EV Driver</option>
+          </select>
+        </label>
+        <button class="btn primary" id="submitBtn">Log in as Station Owner</button>
+      </form>
+      <button class="switch" id="switchMode">
+        New here? Create an account
+      </button>
+      <p id="authMessage" role="status"></p>
+      <p class="fineprint">
+        Sign in with your username and password, or use the pre-configured demo credentials above.
+      </p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="auth.js"></script>
+  </body>
+</html>

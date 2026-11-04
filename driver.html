@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Driver Dashboard — ChargeSmart</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">⚡</span>
+          <div><b>ChargeSmart</b><small>Driver workspace</small></div>
+        </div>
+        <nav>
+          <a class="nav active" href="#overview">Overview</a>
+          <a class="nav" href="#slotScheduler">📅 Slot Calendar</a>
+          <a class="nav" href="#stations">Find stations</a>
+          <a class="nav" href="#bookings">My bookings & schedule</a>
+          <a class="nav" href="ev-navigation.html">Navigate to a station ↗</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <span class="user-pill">EV Driver</span>
+          <button class="btn secondary" id="logout">Log out</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">DRIVER WORKSPACE</span>
+            <h1>EV Driver Dashboard</h1>
+          </div>
+          <div class="account">
+            <span id="welcomeName">Welcome</span>
+            <span class="avatar">EV</span>
+          </div>
+        </header>
+
+        <section id="overview" class="welcome">
+          <h2>Find a smarter charging slot 👋</h2>
+          <p>Browse charging stations, check date & time slot availability on the calendar, and reserve ahead.</p>
+        </section>
+
+        <div class="stats">
+          <article>
+            <small>Stations in demo network</small>
+            <strong>6</strong>
+            <span>Sample station records</span>
+          </article>
+          <article>
+            <small>Average charging rate</small>
+            <strong>₹14.8 <small>/kWh</small></strong>
+            <span>Illustrative pricing</span>
+          </article>
+          <article>
+            <small>Estimated wait</small>
+            <strong>8 min</strong>
+            <span>Sample queue estimate</span>
+          </article>
+          <article>
+            <small>Your scheduled bookings</small>
+            <strong id="bookingCount">0</strong>
+            <span>Saved in this browser</span>
+          </article>
+        </div>
+
+        <!-- Interactive Calendar & Slot Scheduler in User Platform -->
+        <section id="slotScheduler" class="panel calendar-panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow" style="color:var(--blue)">LIVE SLOT RESERVATION</span>
+              <h2>📅 Charging Slot Calendar</h2>
+              <p>Click any date on the calendar, choose your station, and reserve an available 1-hour time slot.</p>
+            </div>
+            <div class="calendar-quick-actions" style="display:flex;gap:8px">
+              <button type="button" class="btn secondary" id="calTodayBtn">Today</button>
+              <button type="button" class="btn secondary" id="calTomorrowBtn">Tomorrow</button>
+            </div>
+          </div>
+
+          <div class="calendar-scheduler-layout">
+            <!-- Left: Month Calendar Widget -->
+            <div class="calendar-card">
+              <div class="calendar-header">
+                <button type="button" class="cal-nav-btn" id="calPrevMonth" title="Previous Month">‹</button>
+                <h3 id="calMonthYear">November 2026</h3>
+                <button type="button" class="cal-nav-btn" id="calNextMonth" title="Next Month">›</button>
+              </div>
+              <div class="calendar-weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              <div class="calendar-days-grid" id="calDaysGrid">
+                <!-- Populated dynamically by dashboard.js -->
+              </div>
+              <div class="calendar-legend">
+                <span><i class="legend-dot today"></i> Today</span>
+                <span><i class="legend-dot selected"></i> Selected</span>
+                <span><i class="legend-dot booked"></i> Reserved</span>
+              </div>
+            </div>
+
+            <!-- Right: Station Slot Selector for chosen date -->
+            <div class="slot-picker-card">
+              <div class="slot-picker-header">
+                <div>
+                  <small class="slot-picker-eyebrow">CHOSEN DATE</small>
+                  <h3 id="slotSelectedDateDisplay">Wednesday, Nov 4, 2026</h3>
+                </div>
+                <span class="status available" id="slotAvailabilitySummary">12 slots available</span>
+              </div>
+
+              <div class="scheduler-controls">
+                <label>
+                  Select Station
+                  <select id="schedulerStationSelect">
+                    <!-- Populated dynamically by dashboard.js -->
+                  </select>
+                </label>
+
+                <label>
+                  <span>Select Time Slot</span>
+                  <div class="scheduler-slot-grid" id="schedulerSlotGrid">
+                    <!-- Populated dynamically by dashboard.js -->
+                  </div>
+                  <input type="hidden" id="schedulerChosenSlot" value="10:00 AM - 11:00 AM" />
+                </label>
+
+                <div class="scheduler-booking-form">
+                  <div class="form-row">
+                    <label>
+                      Vehicle ID / Plate
+                      <input id="schedulerVehicleId" value="EV-1024" placeholder="e.g. EV-1024" />
+                    </label>
+                    <label>
+                      Energy (kWh)
+                      <input id="schedulerEnergy" type="number" min="1" max="200" value="20" />
+                    </label>
+                  </div>
+
+                  <div class="scheduler-summary-bar">
+                    <div>
+                      <span class="summary-label">Total Cost:</span>
+                      <strong id="schedulerCostDisplay">₹238.00</strong>
+                      <small id="schedulerRateNote">(₹11.90 / kWh)</small>
+                    </div>
+                    <button class="btn primary" id="schedulerBookBtn">Reserve This Slot</button>
+                  </div>
+                  <p id="schedulerStatusMsg" role="status" class="scheduler-msg"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Station Finder List -->
+        <section id="stations" class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Recommended charging stations</h2>
+              <p>Compare nearby stations or click "Book slot" to schedule.</p>
+            </div>
+            <button class="btn secondary" id="navigateNearby">Find nearby & navigate ↗</button>
+          </div>
+          <div class="filters">
+            <input id="search" placeholder="Search station or area" />
+            <select id="filter">
+              <option value="all">All statuses</option>
+              <option value="available">Available</option>
+              <option value="busy">Busy</option>
+            </select>
+            <select id="sort">
+              <option value="recommended">Recommended</option>
+              <option value="price">Lowest rate</option>
+              <option value="wait">Shortest wait</option>
+            </select>
+          </div>
+          <div id="stationList" class="station-grid"></div>
+        </section>
+
+        <!-- Driver Bookings & Schedule Table -->
+        <section id="bookings" class="panel">
+          <div class="section-head">
+            <div>
+              <h2>My bookings & schedule</h2>
+              <p>Your reserved charging slots with booked dates and times.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Station</th>
+                  <th>Date</th>
+                  <th>Slot Time</th>
+                  <th>Energy</th>
+                  <th>Est. Cost</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="bookingRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <footer class="fineprint">
+          Demo interface: sample availability, slot schedule, and bookings. No payment or live charger connection.
+        </footer>
+      </main>
+    </div>
+
+    <!-- Quick Modal Slot Reservation (When clicked from station cards) -->
+    <div class="modal-layer hidden" id="bookingModal">
+      <section class="modal">
+        <button class="close" id="closeModal">×</button>
+        <span class="eyebrow">RESERVE A SLOT</span>
+        <h2 id="modalTitle">Station</h2>
+
+        <div class="modal-body">
+          <label>
+            Vehicle ID / Plate
+            <input id="vehicleId" placeholder="e.g. EV-1024" value="EV-1024" />
+          </label>
+
+          <label>
+            Select Date
+            <div class="date-row">
+              <input id="bookingDate" type="date" required />
+            </div>
+            <div class="date-quick-pills" id="dateQuickPills">
+              <button type="button" class="pill-btn active" data-offset="0">Today</button>
+              <button type="button" class="pill-btn" data-offset="1">Tomorrow</button>
+              <button type="button" class="pill-btn" data-offset="2">+2 Days</button>
+            </div>
+          </label>
+
+          <label>
+            <span>Select Time Slot <small id="slotCountInfo" style="color:var(--muted);font-weight:normal"></small></span>
+            <div class="slot-grid" id="slotGrid">
+              <!-- Dynamically populated by dashboard.js -->
+            </div>
+            <input type="hidden" id="selectedSlot" value="10:00 AM - 11:00 AM" />
+          </label>
+
+          <label>
+            Energy needed (kWh)
+            <div class="energy-input-row">
+              <input id="energy" type="number" min="1" max="200" value="20" />
+              <span class="kwh-tag">kWh</span>
+            </div>
+          </label>
+
+          <div class="booking-summary-card">
+            <div class="summary-line">
+              <span>📅 Slot Date & Time:</span>
+              <b id="summaryDateTime">Today • 10:00 AM - 11:00 AM</b>
+            </div>
+            <div class="summary-line">
+              <span>⚡ Energy:</span>
+              <b id="summaryEnergy">20 kWh</b>
+            </div>
+            <div class="summary-line total">
+              <span>Estimated Cost:</span>
+              <b id="costEstimate">₹0.00</b>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn primary" id="confirmBooking">Confirm slot reservation</button>
+        <p class="fineprint">This reserves your chosen slot for this demo station.</p>
+      </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>

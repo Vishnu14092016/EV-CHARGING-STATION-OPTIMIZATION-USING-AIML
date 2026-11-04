@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Owner Console — ChargeSmart</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">⚡</span>
+          <div><b>ChargeSmart</b><small>Owner workspace</small></div>
+        </div>
+        <nav>
+          <a class="nav active" href="#overview">Overview</a>
+          <a class="nav" href="#ownerCalendarSection">📅 Schedule Calendar</a>
+          <a class="nav" href="#chargers">Charger management</a>
+          <a class="nav" href="#ownerBookings">Bookings & Schedule</a>
+          <a class="nav" href="#analytics">Reports & analytics</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <span class="user-pill">Station Owner</span>
+          <button class="btn secondary" id="logout">Log out</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">OWNER WORKSPACE</span>
+            <h1>Station Owner Console</h1>
+          </div>
+          <div class="account">
+            <span id="welcomeName">Welcome</span>
+            <span class="avatar">OW</span>
+          </div>
+        </header>
+
+        <section id="overview" class="welcome">
+          <h2>Manage your charging network 👋</h2>
+          <p>Review charger availability, calendar schedule reservations, and operational metrics.</p>
+        </section>
+
+        <div class="stats">
+          <article>
+            <small>Total chargers</small>
+            <strong id="totalChargers">12</strong>
+            <span>Across demo stations</span>
+          </article>
+          <article>
+            <small>Available now</small>
+            <strong id="availableChargers">8</strong>
+            <span>Ready for booking</span>
+          </article>
+          <article>
+            <small>Today's revenue</small>
+            <strong id="revenue">₹0</strong>
+            <span>Estimated demo revenue</span>
+          </article>
+          <article>
+            <small>Total scheduled slots</small>
+            <strong id="totalSlotsCount">0</strong>
+            <span>Active reservations</span>
+          </article>
+        </div>
+
+        <!-- Interactive Schedule Calendar for Owner Platform -->
+        <section id="ownerCalendarSection" class="panel calendar-panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow" style="color:var(--blue)">NETWORK CALENDAR</span>
+              <h2>📅 Station Schedule Calendar</h2>
+              <p>Browse network reservations on the calendar and inspect hourly slot allocations across stations.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button type="button" class="btn secondary" id="ownerCalTodayBtn">Today</button>
+              <button type="button" class="btn secondary" id="ownerCalTomorrowBtn">Tomorrow</button>
+            </div>
+          </div>
+
+          <div class="calendar-scheduler-layout">
+            <!-- Left: Interactive Month Calendar -->
+            <div class="calendar-card">
+              <div class="calendar-header">
+                <button type="button" class="cal-nav-btn" id="ownerCalPrevMonth" title="Previous Month">‹</button>
+                <h3 id="ownerCalMonthYear">November 2026</h3>
+                <button type="button" class="cal-nav-btn" id="ownerCalNextMonth" title="Next Month">›</button>
+              </div>
+              <div class="calendar-weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              <div class="calendar-days-grid" id="ownerCalDaysGrid">
+                <!-- Populated dynamically by dashboard.js with booking indicators -->
+              </div>
+              <div class="calendar-legend">
+                <span><i class="legend-dot today"></i> Today</span>
+                <span><i class="legend-dot selected"></i> Selected</span>
+                <span><i class="legend-dot booked"></i> Reserved Slots</span>
+              </div>
+            </div>
+
+            <!-- Right: Hourly Slot Timeline for Selected Date -->
+            <div class="slot-picker-card">
+              <div class="slot-picker-header">
+                <div>
+                  <small class="slot-picker-eyebrow">INSPECTING DATE</small>
+                  <h3 id="ownerSelectedDateDisplay">Wednesday, Nov 4, 2026</h3>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <span class="status available" id="ownerDateBookingsBadge">0 Bookings</span>
+                  <span class="schedule-chip" style="margin:0"><b id="ownerDayRevenue">₹0.00</b></span>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <label style="flex:1;min-width:200px;font-size:12px;font-weight:700;color:var(--muted);display:grid;gap:5px">
+                  Filter by Station:
+                  <select id="ownerScheduleStationFilter">
+                    <option value="all">All Stations (Network Wide)</option>
+                    <!-- Populated by dashboard.js with demoStations -->
+                  </select>
+                </label>
+              </div>
+
+              <!-- Hourly timeline list -->
+              <div class="owner-slot-timeline" id="ownerSlotTimeline">
+                <!-- Rendered dynamically by dashboard.js -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="chargers" class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Charger management</h2>
+              <p>Toggle sample chargers between available and busy.</p>
+            </div>
+            <button class="btn primary" id="addCharger">＋ Add charger</button>
+          </div>
+          <div id="chargerList" class="charger-grid"></div>
+        </section>
+
+        <section id="ownerBookings" class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Station bookings & schedule</h2>
+              <p>Calendar reservations & time slots across your charging network.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted);margin:0">
+                Filter date:
+                <input type="date" id="ownerDateFilter" class="table-date-filter" title="Filter by date" />
+              </label>
+              <button class="btn secondary" id="clearDateFilter">Show all dates</button>
+              <button class="btn secondary" id="exportCsv">Export CSV</button>
+            </div>
+          </div>
+
+          <!-- Schedule summary pills -->
+          <div class="schedule-summary-bar" id="scheduleSummaryBar">
+            <span class="schedule-chip">📅 Today's Slots: <b id="todaySlotsCount">0</b></span>
+            <span class="schedule-chip">📆 Upcoming Slots: <b id="upcomingSlotsCount">0</b></span>
+            <span class="schedule-chip">⚡ Total Reserved: <b id="totalEnergyReserved">0 kWh</b></span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Driver</th>
+                  <th>Station</th>
+                  <th>Date</th>
+                  <th>Slot Time</th>
+                  <th>Energy</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="ownerBookingRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="analytics" class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Reports & analytics</h2>
+              <p>Simple operational insights.</p>
+            </div>
+          </div>
+          <div class="insight-grid">
+            <article>
+              <b>Calendar Slot Queue</b>
+              <p>Drivers reserve designated 1-hour slots to reduce station congestion.</p>
+            </article>
+            <article>
+              <b>Cost estimation</b>
+              <p>Energy required (kWh) × station rate (₹/kWh).</p>
+            </article>
+            <article>
+              <b>Optimization goal</b>
+              <p>Compare availability, scheduled time, cost, and distance.</p>
+            </article>
+          </div>
+          <p class="notice">Data is sample/local browser data. This console is not connected to live chargers or payment services.</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>
